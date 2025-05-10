@@ -14,9 +14,9 @@ export default function() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		verify().then((result: Boolean) => {
-			if (result) { navigate('/dashboard') }
-		})
+		//verify().then((result: Boolean) => {
+		//	if (result) { navigate('/dashboard') }
+		//})
 	}, [])
 
 	return (
