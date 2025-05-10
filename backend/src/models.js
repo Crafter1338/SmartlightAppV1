@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 export const Account = mongoose.model('Account', new mongoose.Schema({
-    uuid: { type: String, required: true, unique: true },
+    uid: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
 
@@ -12,7 +12,7 @@ export const Account = mongoose.model('Account', new mongoose.Schema({
 }));
 
 export const Smartlight = mongoose.model('Smartlight', new mongoose.Schema({
-    uuid: { type: String, required: true, unique: true },
+    uid: { type: String, required: true, unique: true },
 
     state: { type: Boolean },
     brightness: { type: Number },      // 1-255

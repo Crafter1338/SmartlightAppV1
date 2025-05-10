@@ -10,6 +10,18 @@ services:
       - "3000:3000"
     depends_on:
       - mongodb
+      - redis
+  
+  worker:
+    build: ./backend
+    command: ["nodemon", "--legacy-watch", "src/workers/worker.js"]
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - mongodb
   
   mongodb:
     image: mongo:6
@@ -18,6 +30,12 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+
+  redis:
+    image: redis:latest  # Redis-Service hinzufügen
+    restart: unless-stopped
+    ports:
+      - "6379:6379"      # Standard Redis Port
 
   frontend:
     build: ./frontend

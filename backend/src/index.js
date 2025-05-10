@@ -7,7 +7,7 @@ import cors                       from 'cors'        ;
 import mongoose                   from 'mongoose'    ;
 import { v4 as uuid }             from 'uuid'        ;
 
-import { Account as AccountModel, Smartlight as SmartlightModel } from './models.js'
+import { clients, addClient, removeClient } from './clients.js'
 
 import jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
@@ -27,15 +27,12 @@ mongoose.connect('mongodb://mongodb:27017/smartlight-app').then(() => { console.
 
 //////////////////////////////////
 socketServer.on('connection', async (socket) => {
-    console.log('Ein neuer WebClient verbunden.');
-
-    socket.on('/update-smartlight', async (data) => {
-        const { token } = data;
-        console.log(data);
-    });
+    console.log('Ein neuer WebClient verbunden.', socket.id);
+    addClient(socket);
 
     socket.on('disconnect', () => {
-        console.log('Ein WebClient hat die Verbindung getrennt.');
+        console.log('Ein WebClient hat die Verbindung getrennt.', socket.id);
+        removeClient(socket.id);
     });
 });
 
@@ -78,3 +75,7 @@ app.post('/register-smartlight', async(req, res) => {
 httpServer.listen(3000, () => {
     console.log('Backend läuft auf http://localhost:3000');
 });
+
+import { createAccount } from './queues/accountQueue.js';
+
+createAccount({ email: 'test3', password: 'test' })
