@@ -1,0 +1,90 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - HOST=0.0.0.0
+      - BACKEND=192.168.2.116:2000
+    command: npm run dev
+
+  backend:
+    build: ./backend
+    ports:
+      - "2000:2000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run dev
+    environment:
+      - PORT=2000
+      - MONGO_URI=mongodb://mongo:27017/SmartHome
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mongo
+      - redis
+    cpus: 2.0
+
+  device-worker:
+    build: ./backend
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run device-worker:dev
+    depends_on:
+      - mongo
+      - redis
+      - backend
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/SmartHome
+    cpus: 2.0
+
+  room-worker:
+    build: ./backend
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run room-worker:dev
+    depends_on:
+      - mongo
+      - redis
+      - backend
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/SmartHome
+    cpus: 2.0
+
+
+  mongo:
+    image: mongo:7
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    restart: always
+    ports:
+      - "1883:1883"   # MQTT (TCP)
+      - "9001:9001"   # MQTT über WebSocket
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+
+volumes:
+  mongo-data:
+  redis-data:

@@ -1,23 +1,38 @@
 import mongoose from 'mongoose';
 
-export const Account = mongoose.model('Account', new mongoose.Schema({
+// schemas //
+const deviceSchema = new mongoose.Schema({
+    name: { type: String },
     uid: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    mac: { type: String },  
 
-    security_level: { type: Number, default: 0 },
+    room: { type: String },
+    battery: { type: Number }, // 1-100
+    online: { type: Boolean, default: false },
 
-    smartlight_uuids: [ String ],
-    smartlight_data : [ { name: String, description: String } ],
-}));
+    type: { type: String }, // sensor / actuator
+    variant: { type: String }, // thermometer / light
+    subvariant: { type: Number }, // subvariant - closet light, general light etc.
 
-export const Smartlight = mongoose.model('Smartlight', new mongoose.Schema({
+    data: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+    }
+});
+
+const roomSchema = new mongoose.Schema({
+    name: { type: String },
     uid: { type: String, required: true, unique: true },
+});
 
-    state: { type: Boolean },
-    brightness: { type: Number },      // 1-255
-    primary_color: { type: String },   // HEX
-    secondary_color: { type: String }, // HEX
-    
-    battery_charge: { type: Number }, 
-}));
+const homeSchema = new mongoose.Schema({
+    name: { type: String },
+    uid: { type: String, required: true, unique: true },
+});
+
+// pre hooks //
+
+// models //
+export const roomModel   = mongoose.model("Room", roomSchema);
+export const deviceModel = mongoose.model("Device", deviceSchema);
+export const homeModel   = mongoose.model("Home", homeSchema); 
