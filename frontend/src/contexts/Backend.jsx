@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 
 const Context = createContext(null);
 
-const ADRESS = "http://192.168.2.179";
+const ADRESS = "http://http://srv868971.hstgr.cloud/";
 
 export function BackendProvider ({ children }) {
 	const [socket, setSocket] = useState(null);
