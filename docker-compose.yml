@@ -28,7 +28,7 @@ services:
     depends_on:
       - mongo
       - redis
-    cpus: 2.0
+    #cpus: 2.0
     restart: unless-stopped
 
   device-worker:
@@ -43,7 +43,7 @@ services:
       - backend
     environment:
       - MONGO_URI=mongodb://mongo:27017/SmartHome
-    cpus: 2.0
+    #cpus: 2.0
     restart: unless-stopped
 
   room-worker:
@@ -58,7 +58,7 @@ services:
       - backend
     environment:
       - MONGO_URI=mongodb://mongo:27017/SmartHome
-    cpus: 2.0
+    #cpus: 2.0
     restart: unless-stopped
 
 
