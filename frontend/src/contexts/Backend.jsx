@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 
 const Context = createContext(null);
 
-const ADRESS = "http://srv868971.hstgr.cloud";
+const ADRESS = "http://srv868971.hstgr.cloud:2000";
 
 export function BackendProvider ({ children }) {
 	const [socket, setSocket] = useState(null);
@@ -31,7 +31,7 @@ export function BackendProvider ({ children }) {
 
 		fetchInitialData();
 
-		const s = io(`${ADRESS}:2000`);
+		const s = io(`${ADRESS}`);
 		setSocket(s);
 
 		s.on("device:update", ({ uid, device }) => {
