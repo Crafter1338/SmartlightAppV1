@@ -3,6 +3,8 @@ import { io } from "socket.io-client";
 
 const Context = createContext(null);
 
+const ADRESS = "http://192.168.2.180";
+
 export function BackendProvider ({ children }) {
 	const [socket, setSocket] = useState(null);
 	const [devices, setDevices] = useState([null]);
@@ -14,9 +16,9 @@ export function BackendProvider ({ children }) {
 		async function fetchInitialData() {
 			try {
 				const [devicesRes, roomsRes, deviceUidRes] = await Promise.all([
-					fetch('http://192.168.2.116:2000/api/devices'),
-					fetch('http://192.168.2.116:2000/api/rooms'),
-					fetch('http://192.168.2.116:2000/api/devices-uids'),
+					fetch(`${ADRESS}/api/devices`),
+					fetch(`${ADRESS}/api/rooms`),
+					fetch(`${ADRESS}/api/devices-uids`),
 				]);
 
 				if (devicesRes.ok) setDevices(await devicesRes.json());
@@ -29,7 +31,7 @@ export function BackendProvider ({ children }) {
 
 		fetchInitialData();
 
-		const s = io('http://192.168.2.116:2000');
+		const s = io(`${ADRESS}:2000`);
 		setSocket(s);
 
 		s.on("device:update", ({ uid, device }) => {
