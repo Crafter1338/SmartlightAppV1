@@ -60,6 +60,7 @@ export default function() {
 					>
 						<Room name={'Wohnzimmer'}>
 							{devices?.map(device => {
+								if (!device) {return}
                                 switch (device?.variant) {
                                     case 'smartlight':
                                         return <SmartLight key={device?.uid} deviceUID={device?.uid} />;
@@ -68,7 +69,7 @@ export default function() {
                                     case 'sensor':
                                         return <SmartSensor key={device?.uid} deviceUID={device?.uid} />;
                                     default:
-                                        //console.warn(`Unbekannter Gerätevariante: ${device?.variant} für Gerät ${device?.uid}`);
+                                        console.warn(`Unbekannter Gerätevariante: ${device?.variant} für Gerät ${device?.uid}`);
                                         return null;
                                 }
                             })}

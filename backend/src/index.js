@@ -355,7 +355,7 @@ mqttClient.on('message', async (topic, payload) => {
 	if (uid.length <= 0) { return };
 
 	const device = await getDevice(uid);
-	if (!device) { return };
+	if (!device) { mqttClient.publish(`device/${uid}/error`, JSON.stringify({ type: "device_not_found" })); return };
 
 	switch (action){
 		case 'connect':

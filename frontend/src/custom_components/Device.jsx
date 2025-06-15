@@ -2,7 +2,7 @@ import { Card, Box, Text, ColorPicker, Button, Separator, Portal, HStack, parseC
 
 import { useState } from "react";
 
-import { EllipsisVertical, Plus } from "lucide-react";
+import { DeleteIcon, EllipsisVertical, Plus } from "lucide-react";
 import { useEffect } from "react";
 import { useBackend } from "../contexts/Backend";
 
@@ -32,17 +32,9 @@ function BareStructure({device, loading, children}) {
 				width={'16rem'} variant={'subtle'} p={'1rem'} 
 				display={'flex'} flexDir={'column'} gap={'0.4rem'} userSelect={'none'}
 			>
-				<Card.Header p={0} display={'flex'} flexDir={'column'} gap={'0.55rem'}>		
+				<Card.Header p={0} display={'flex'} flexDir={'column'}>		
 					<Skeleton loading={loading} display={'flex'} flexDir={'row'} alignItems={'center'} gap={'0.5rem'}>
-						<Card.Title maxW={'85%'} flexWrap={'wrap'}>{device?.name}</Card.Title>
-					</Skeleton>
-
-					<Skeleton loading={loading} w={'60%'}>
-						<Box display={'flex'} gap={'0.25rem'} alignItems={'center'}>
-							<Box borderRadius={'0.1rem'} width={'0.7rem'} aspectRatio={1} background={device?.online? 'rgb(93, 228, 93)':'rgb(235, 72, 72)'} />
-							<Text fontSize={'sm'} color={'fg.muted'}>Akkustand:</Text>
-							<Text fontSize={'sm'} color={'fg.muted'}>{device?.battery}%</Text>
-						</Box>
+						<Card.Title maxW={'85%'} mb={'0.25rem'} flexWrap={'wrap'} color={device?.online && "fg.info" || "fg.error"}>{device?.name}</Card.Title>
 					</Skeleton>
 
                     {/*DEVICE MENU*/}
@@ -86,16 +78,15 @@ function BareStructure({device, loading, children}) {
 	);
 }
 
-function SmartLightColorPicker({color, setColor}) {
+function SmartLightColorPicker({color, setColor, disabled}) {
 	return (
 		<>
 			<ColorPicker.Root 
 				size={'md'}
       			value={color} onValueChange={(e) => setColor(e.value)}
+				disabled={disabled}
 			>
 				<ColorPicker.HiddenInput />
-
-				<ColorPicker.Label>Sekundär</ColorPicker.Label>
 
 				<ColorPicker.Control display={'flex'} justifyContent={'center'} alignContent={'center'}>
 					<ColorPicker.Trigger />
@@ -120,32 +111,44 @@ function SmartLightColorPicker({color, setColor}) {
 }
 
 export function SmartLight({deviceUID}) { //device.name, device.uid, device.color, device.state --> combination from online and offline document
+	const {devices} = useBackend();
+	
 	const [device, setDevice] = useState({name: 'Smart Light', battery:100});
 	const [loading, setLoading] = useState(false);
 
 	const [primary, setPrimary] = useState(parseColor("#ffffff"));
     const [secondary, setSecondary] = useState(parseColor("#ffffff"));
 
+	useEffect(() => {
+		setDevice({name: 'Smart Thermometer', ...devices.find(d => d.uid == deviceUID)});
+	}, [devices])
+
 	return (
 		<BareStructure device={device} loading={loading}>
-			<Box display={'flex'} flexDir={'row'} gap={'0.75rem'} justifyContent={'space-between'} mt={'auto'}>
+			<Box display={'flex'} flexDir={'row'} gap={'0.75rem'} justifyContent={'space-between'} >
 				<Skeleton loading={loading}>
-					<SmartLightColorPicker color={primary} setColor={setPrimary}/>
+					<Box alignItems={'center'} display={'flex'} flexDir={'column'} gap={'0.25rem'}>
+						<Text fontSize={'sm'} color={"gray.400"}>Primär</Text>
+						<SmartLightColorPicker disabled={!device?.online} color={primary} setColor={setPrimary}/>
+					</Box>
 				</Skeleton>
 
 				<Skeleton loading={loading}>
-					<SmartLightColorPicker color={secondary} setColor={setSecondary}/>
+					<Box alignItems={'center'} display={'flex'} flexDir={'column'} gap={'0.25rem'}>
+						<Text fontSize={'sm'} color={"gray.400"}>Sekundär</Text>
+						<SmartLightColorPicker disabled={!device?.online} color={secondary} setColor={setSecondary}/>
+					</Box>
 				</Skeleton>
 
 				<Skeleton loading={loading}>
-					<Box flex={1} display={'flex'} flexDir={'column'} h={'100%'}>
-						<Text flex={1} fontSize={'sm'} textAlign={'center'} fontWeight={'medium'}>Ein / Aus</Text>
-						<Button variant={'outline'}>Aus</Button>
+					<Box alignItems={'center'} display={'flex'} flexDir={'column'} gap={'0.25rem'}>
+						<Text fontSize={'sm'} color={"gray.400"}>Ein / Aus</Text>
+						<Button variant={'surface'} disabled={!device?.online}>Ein</Button>
 					</Box>
 				</Skeleton>
 			</Box>
 
-			<Skeleton loading={loading}>
+			<Skeleton loading={loading} mt={'auto'}>
 				<Button variant={'outline'} _hover={{ bg:'bg.emphasized'}} w={'100%'}>Mehr</Button>
 			</Skeleton>
 		</BareStructure>
