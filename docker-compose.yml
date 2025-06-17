@@ -10,7 +10,7 @@ services:
       - HOST=0.0.0.0
       - BACKEND=192.168.2.116:2000
     command: npm run dev
-    restart: unless-stopped
+    restart: always
 
   backend:
     build: ./backend
@@ -29,7 +29,7 @@ services:
       - mongo
       - redis
     #cpus: 2.0
-    restart: unless-stopped
+    restart: always
 
   device-worker:
     build: ./backend
@@ -44,7 +44,7 @@ services:
     environment:
       - MONGO_URI=mongodb://mongo:27017/SmartHome
     #cpus: 2.0
-    restart: unless-stopped
+    restart: always
 
   room-worker:
     build: ./backend
@@ -59,7 +59,7 @@ services:
     environment:
       - MONGO_URI=mongodb://mongo:27017/SmartHome
     #cpus: 2.0
-    restart: unless-stopped
+    restart: always
 
 
   mongo:

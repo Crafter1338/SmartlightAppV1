@@ -29,7 +29,7 @@ function BareStructure({device, loading, children}) {
 	return (
 		<>
 			<Card.Root 
-				width={'16rem'} variant={'subtle'} p={'1rem'} 
+				width={'100%'} variant={'subtle'} p={'1rem'} 
 				display={'flex'} flexDir={'column'} gap={'0.4rem'} userSelect={'none'}
 			>
 				<Card.Header p={0} display={'flex'} flexDir={'column'}>		
@@ -38,7 +38,7 @@ function BareStructure({device, loading, children}) {
 					</Skeleton>
 
                     {/*DEVICE MENU*/}
-                    <Menu.Root>
+                    {!loading && <Menu.Root>
                         <Menu.Trigger asChild position={'absolute'} right={0} top={0} m={'0.5rem'}>
                             <IconButton variant={'outline'} size={'sm'}><EllipsisVertical/></IconButton>
                         </Menu.Trigger>
@@ -63,7 +63,7 @@ function BareStructure({device, loading, children}) {
                                 </Menu.Content>
                             </Menu.Positioner>
                         </Portal>
-                    </Menu.Root>
+                    </Menu.Root>}
 
 					<Separator />
 				</Card.Header>
@@ -114,13 +114,20 @@ export function SmartLight({deviceUID}) { //device.name, device.uid, device.colo
 	const {devices} = useBackend();
 	
 	const [device, setDevice] = useState({name: 'Smart Light', battery:100});
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const [primary, setPrimary] = useState(parseColor("#ffffff"));
     const [secondary, setSecondary] = useState(parseColor("#ffffff"));
 
 	useEffect(() => {
-		setDevice({name: 'Smart Thermometer', ...devices.find(d => d.uid == deviceUID)});
+		let device = devices.find(d => d?.uid == deviceUID);
+
+		setDevice({name: 'Smart Thermometer', ...device});
+
+			
+		if (device) {
+			setLoading(false)
+		}
 	}, [devices])
 
 	return (
@@ -159,10 +166,15 @@ export function SmartThermometer({deviceUID}) {
 	const {devices} = useBackend();
 
 	const [device, setDevice] = useState({name: 'Smart Thermometer', battery:100, temperature: 20, humidity: 50});
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		setDevice({name: 'Smart Thermometer', ...devices.find(d => d.uid == deviceUID)});
+		let device = devices.find(d => d?.uid == deviceUID);
+		setDevice({name: 'Smart Thermometer', ...device});
+
+		if (device) {
+			setLoading(false)
+		}
 	}, [devices])
 
 	const pretty = (num) => {
