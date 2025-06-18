@@ -29,7 +29,6 @@ export function BackendProvider ({ children }) {
 					setDevices(_devices);
 				}
 
-				
 				if (roomsRes.ok) {
 					const _rooms = await roomsRes.json();
 

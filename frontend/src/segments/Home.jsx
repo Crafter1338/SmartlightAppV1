@@ -1,7 +1,10 @@
 import Structure from "./SegmentStructure";
 import { Box, Text } from "@chakra-ui/react";
+
 import { useRoom } from "../hooks/useRoom";
 import { useBackend } from "../contexts/Backend";
+
+import AutoDevice from "../assets/devices/AutoDevice";
 
 function Room({ uid }) {
     const { room, updateData } = useRoom(uid);
@@ -9,9 +12,9 @@ function Room({ uid }) {
     return (
         <Box width={'100%'} display={'flex'} flexDir={'column'} gap={'0.5rem'} pr={'0.5rem'}>
             <Text fontSize={'medium'} fontWeight={'medium'}>{room?.name}</Text>
-            <Box display={'grid'} gridTemplateColumns={'repeat(10, 1fr)'} gridGap={'0.25rem'}>
-                {room?.deviceUids?.length > 0 && room?.deviceUids?.map((uid) => {
-                        if (uid) return (<> </>); //Device (uid)
+            <Box display={'grid'} gridTemplateColumns={'repeat(7, 1fr)'} gridGap={'0.25rem'}>
+                {room?.device_uids?.length > 0 && room?.device_uids?.map((uid) => {
+                        if (uid) return (<AutoDevice uid={uid} key={uid}/>);
                     }
                 )}
             </Box>
@@ -24,7 +27,7 @@ export default function() {
 
     return (
         <Structure title={'Zuhause'}>
-            <Box width={'100%'} overflowY={'scroll'}>
+            <Box width={'100%'} overflowY={'auto'}>
                 {roomUids.length > 0 && roomUids.map((uid) => {
                         if (uid) return (<Room uid={uid} key={uid} />);
                     }
