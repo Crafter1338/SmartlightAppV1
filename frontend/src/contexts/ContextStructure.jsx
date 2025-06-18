@@ -4,11 +4,11 @@ import { ViewportProvider } from "./Viewport";
 export default function({ children }) {
     return (
         <>
-            <ViewportProvider>
-				<BackendProvider>
+            <BackendProvider>
+                <ViewportProvider>
                     { children }
-                </BackendProvider>
-			</ViewportProvider>
+                </ViewportProvider>
+            </BackendProvider>
         </>
     );
 }

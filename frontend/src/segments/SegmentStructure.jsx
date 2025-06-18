@@ -9,7 +9,7 @@ export default function({ children, title, titleChildren }) {
                 { titleChildren }
             </Box>
 
-            <Box width={'100%'} flex={1} p={'0.25rem'} overflowY="auto">
+            <Box width={'100%'} height={'calc(100% - 3rem)'} p={'0.25rem'} display={'flex'} flexDir={'column'}>
                 { children }
             </Box>
         </Box>

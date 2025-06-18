@@ -1,2 +1,15 @@
-1750199578: mosquitto version 2.0.21 terminating
-1750199578: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1750199578: mosquitto version 2.0.21 terminating1750279012: mosquitto version 2.0.21 terminating
+1750279012: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1750279020: mosquitto version 2.0.21 starting
+1750279020: Config loaded from /mosquitto/config/mosquitto.conf.
+1750279020: Opening ipv4 listen socket on port 1883.
+1750279020: Opening ipv6 listen socket on port 1883.
+1750279020: mosquitto version 2.0.21 running
+1750279021: New connection from 172.18.0.6:38062 on port 1883.
+1750279021: New client connected from 172.18.0.6:38062 as mqttjs_ef78b886 (p2, c1, k60).
+1750280821: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1750282622: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1750284423: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1750284754: Client mqttjs_ef78b886 closed its connection.
+1750284756: New connection from 172.18.0.6:49228 on port 1883.
+1750284756: New client connected from 172.18.0.6:49228 as mqttjs_5cbca0b2 (p2, c1, k60).

@@ -7,6 +7,7 @@ import HomeSegment from "./segments/Home";
 import DashboardSegment from "./segments/Dashboard";
 import CalendarSegment from "./segments/Calendar";
 import SettingsSegment from "./segments/Settings";
+import { useViewport } from "./contexts/Viewport";
 
 function Sidebar() {
 	const navigate = useNavigate();
@@ -48,10 +49,12 @@ export function App() {
 		);
 	}
 
+	const {height} = useViewport();
+
 	return (
 		<>
-			<Box width={'100%'} height={'100%'} p={'0.5rem'} display={'grid'} gridTemplateColumns={'repeat(2, 1fr)'} gridTemplateRows={'1.5rem 1fr'} gridColumnGap={'.5rem'} gridRowGap={'.5rem'} overflowY={'auto'}>
-				<Box display={'flex'} gridArea={'1 / 1 / 2 / 3'} gap={'.5rem'}>
+			<Box width={'100%'} height={'100%'} p={'0.5rem'} display={'flex'} flexDir={'column'} gap={'0.5rem'}>
+				<Box width={'100%'} display={'flex'} flexDir={'row'} gap={'.5rem'} height={'1.5rem'}>
 					<TitleBox>
 						<Text fontSize={'xs'} fontWeight={'medium'}>Smarthome V 0.1</Text>
 					</TitleBox>
@@ -76,11 +79,11 @@ export function App() {
 					</TitleBox>
 				</Box>
 
-				<Box gridArea={'2 / 1 / 3 / 3'} height={'100%'} display={'flex'} flexDir={'row'} gap={'0.5rem'}>
+				<Box width={'100%'} height={`calc(${height}px - 3rem)`} display={'flex'} flexDir={'row'} gap={'0.5rem'}>
 					<Sidebar />
 
-					<Box flex={1} height={'100%'} p={'0.5rem'} bgColor={'bg.panel'} borderRadius={'lg'}>
-						<Outlet/>
+					<Box bg={'bg.panel'} h={'100%'} flex={1} p={'0.5rem'} borderRadius={'lg'}>
+						<Outlet />
 					</Box>
 				</Box>
 			</Box>
@@ -98,7 +101,7 @@ export default function() {
 					<Route path="calendar" element={<CalendarSegment />} />
 					<Route path="settings" element={<SettingsSegment />} />
 
-					<Route index element={<HomeSegment />} />
+					<Route index element={<Navigate to={'/app/dashboard'} />} />
 				</Route>
 
 				<Route path="*" element={<Navigate to="/app" />} />

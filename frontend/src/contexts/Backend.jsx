@@ -3,8 +3,8 @@ import { io } from "socket.io-client";
 
 const Context = createContext(null);
 
-//const ADRESS = "http://192.168.2.116:2000";
-const ADRESS = "http://31.97.47.250:2000";
+const ADRESS = "http://192.168.2.116:2000";
+//const ADRESS = "http://31.97.47.250:2000";
 
 export function BackendProvider ({ children }) {
 	const [socket, setSocket] = useState(null);
@@ -12,19 +12,30 @@ export function BackendProvider ({ children }) {
 	const [rooms, setRooms] = useState([null]);
 	
 	const [deviceUids, setDeviceUids] = useState([null]);
+	const [roomUids, setRoomUids] = useState([null]);
 
 	useEffect(() => {
 		async function fetchInitialData() {
 			try {
-				const [devicesRes, roomsRes, deviceUidRes] = await Promise.all([
+				const [ devicesRes, roomsRes ] = await Promise.all([
 					fetch(`${ADRESS}/api/devices`),
 					fetch(`${ADRESS}/api/rooms`),
-					fetch(`${ADRESS}/api/devices-uids`),
 				]);
 
-				if (devicesRes.ok) setDevices(await devicesRes.json());
-				if (roomsRes.ok) setRooms(await roomsRes.json());
-				if (deviceUidRes.ok) setDeviceUids(await deviceUidRes.json());
+				if (devicesRes.ok) {
+					const _devices = await devicesRes.json();
+
+					setDeviceUids(_devices.map((d) => d.uid));
+					setDevices(_devices);
+				}
+
+				
+				if (roomsRes.ok) {
+					const _rooms = await roomsRes.json();
+
+					setRoomUids(_rooms.map((r) => r.uid));
+					setRooms(_rooms);
+				}
 			} catch (e) {
 				console.error("Fehler beim Laden der Backend-Daten:", e);
 			}
@@ -54,7 +65,7 @@ export function BackendProvider ({ children }) {
 
 	return (
 		<>
-			<Context.Provider value={{ socket, devices, rooms, deviceUids }}>
+			<Context.Provider value={{ socket, devices, rooms, deviceUids, roomUids }}>
 				{ children }
 			</Context.Provider>
 		</>
@@ -62,7 +73,7 @@ export function BackendProvider ({ children }) {
 }
 
 export function useBackend() {
-	const context = useContext(Context)
+	const context = useContext(Context);
 	if (!context) { throw new Error('context for useBackend missing!') }
 
 	return context;
