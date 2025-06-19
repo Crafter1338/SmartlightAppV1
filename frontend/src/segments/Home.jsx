@@ -26,11 +26,11 @@ function Room({ uid }) {
     );
 }
 
-export default function() {
+export default function({ setMobileDrawerOpen }) {
     const { rooms } = useBackend();
 
     return (
-        <Structure title={'Zuhause'}>
+        <Structure title={'Zuhause'} setMobileDrawerOpen={ setMobileDrawerOpen }>
             <Box width={'100%'} height={'100%'} overflowY={'scroll'} scrollbarColor={'rgb(120,120,120) #111111'}>
                 {rooms.map((room) => (<Room uid={room?.uid} key={room?.uid} />))}
             </Box>
