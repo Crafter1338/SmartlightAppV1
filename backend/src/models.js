@@ -33,6 +33,7 @@ const homeSchema = new mongoose.Schema({
 });
 
 // pre hooks //
+// needa be done !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (see above)
 
 // models //
 export const roomModel   = mongoose.model("Room", roomSchema);

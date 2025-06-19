@@ -28,7 +28,7 @@ if (cluster.isPrimary) {
 	})
 } else {
 	console.log(`Worker [#${process.pid}] gestartet`)
-	new Worker('deviceUpdate', async (job) => {
+	new Worker('device', async (job) => {
         await deviceWorkerHandler(job);
     }, {connection: redisOpts})
 }

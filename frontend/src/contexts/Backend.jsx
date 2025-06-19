@@ -3,16 +3,13 @@ import { io } from "socket.io-client";
 
 const Context = createContext(null);
 
-//const ADRESS = "http://192.168.2.116:2000";
-const ADRESS = "http://31.97.47.250:2000";
+const ADRESS = "http://192.168.2.116:2000";
+//const ADRESS = "http://31.97.47.250:2000";
 
 export function BackendProvider ({ children }) {
 	const [socket, setSocket] = useState(null);
 	const [devices, setDevices] = useState([null]);
 	const [rooms, setRooms] = useState([null]);
-	
-	const [deviceUids, setDeviceUids] = useState([null]);
-	const [roomUids, setRoomUids] = useState([null]);
 
 	useEffect(() => {
 		async function fetchInitialData() {
@@ -25,14 +22,12 @@ export function BackendProvider ({ children }) {
 				if (devicesRes.ok) {
 					const _devices = await devicesRes.json();
 
-					setDeviceUids(_devices.map((d) => d.uid));
 					setDevices(_devices);
 				}
 
 				if (roomsRes.ok) {
 					const _rooms = await roomsRes.json();
 
-					setRoomUids(_rooms.map((r) => r.uid));
 					setRooms(_rooms);
 				}
 			} catch (e) {
@@ -54,6 +49,21 @@ export function BackendProvider ({ children }) {
 		s.on("room:update", ({ uid, room }) => {
 			setRooms(prev =>
 				prev.map(r => (r.uid === uid ? { ...r, ...room, uid } : r))
+				.sort((roomA, roomB) => roomA?.index || 0 - roomB?.index)
+			);
+		});
+
+		s.on("room:add", ({ room }) => {
+			setRooms(prev => 
+				[...prev, room]
+				.sort((roomA, roomB) => roomA?.index || 0 - roomB?.index)
+			);
+		});
+
+		s.on("room:remove", ({ uid }) => {
+			setRooms(prev => 
+				prev.filter((r) => r.uid != uid) 
+				.sort((roomA, roomB) => roomA?.index || 0 - roomB?.index)
 			);
 		});
 
@@ -64,7 +74,7 @@ export function BackendProvider ({ children }) {
 
 	return (
 		<>
-			<Context.Provider value={{ socket, devices, rooms, deviceUids, roomUids }}>
+			<Context.Provider value={{ socket, devices, rooms }}>
 				{ children }
 			</Context.Provider>
 		</>

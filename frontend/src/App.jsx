@@ -49,7 +49,7 @@ export function App() {
 		);
 	}
 
-	const {height} = useViewport();
+	const {height, isSm} = useViewport();
 
 	return (
 		<>
@@ -59,9 +59,9 @@ export function App() {
 						<Text fontSize={'xs'} fontWeight={'medium'}>Smarthome V 0.1</Text>
 					</TitleBox>
 
-					<TitleBox>
+					{!isSm && <TitleBox>
 						<Text fontSize={'xs'} fontWeight={'medium'}>Made with Love</Text>
-					</TitleBox>
+					</TitleBox>}
 
 					<div style={{ flex:1 }}></div>
 
@@ -80,7 +80,7 @@ export function App() {
 				</Box>
 
 				<Box width={'100%'} height={`calc(${height}px - 3rem)`} display={'flex'} flexDir={'row'} gap={'0.5rem'}>
-					<Sidebar />
+					{!isSm && <Sidebar />}
 
 					<Box bg={'bg.panel'} h={'100%'} flex={1} p={'0.5rem'} borderRadius={'lg'}>
 						<Outlet />

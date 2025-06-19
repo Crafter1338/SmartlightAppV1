@@ -28,7 +28,7 @@ if (cluster.isPrimary) {
 	})
 } else {
 	console.log(`Worker [#${process.pid}] gestartet`)
-	new Worker('roomUpdate', async (job) => {
+	new Worker('room', async (job) => {
         await roomWorkerHandler(job);
     }, {connection: redisOpts})
 }

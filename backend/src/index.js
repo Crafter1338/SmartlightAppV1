@@ -46,14 +46,14 @@ mqttClient.on('error', (err) => {
 	console.error('MQTT error:', err)
 })
 
-const deviceQueue = new Queue('deviceUpdate', {
-	connection: redisOpts,
-})
-
 // Bei 1.000.000 Jobs / Sekunde würde das System 584.942 (also 500 tausend) Jahre aushalten
 // Oder falls nicht unsigned würde das System 292.471 Jahre aushalten --> Mach dir keine Sorgen um die scheiß Job IDS, an denen scheiterts nicht.
 
-const roomQueue = new Queue('roomUpdate', {
+const deviceQueue = new Queue('device', {
+	connection: redisOpts,
+})
+
+const roomQueue = new Queue('room', {
 	connection: redisOpts,
 })
 
@@ -88,6 +88,29 @@ async function updateRoom(uid, room) {
 	roomQueue.add('update', {uid, room, timestamp}, { removeOnComplete: true, removeOnFail: true });
 }
 
+async function addRoom(room) {
+	const timestamp = Date.now();
+	io.emit('room:add', {room});
+
+	await redis.set(
+		`room:${room?.uid}`,
+		JSON.stringify({ room, uid: room?.uid, _updated: timestamp }),
+		'EX',
+		600
+	);
+
+	roomQueue.add('add', {uid: room?.uid, room, timestamp}, { removeOnComplete: true, removeOnFail: true });
+}
+
+async function removeRoom(uid) {
+	const timestamp = Date.now();
+	io.emit('room:remove', {uid});
+
+	await redis.del(`room:${uid}`);
+
+	roomQueue.add('remove', {uid, timestamp}, { removeOnComplete: true, removeOnFail: true });
+}
+
 async function getDevice(uid) {
 	const current = await redis.get(`device:${uid}`)
 	return current? JSON.parse(current).device : await deviceModel.findOne({uid}).lean() || null
@@ -100,20 +123,7 @@ async function getRoom(uid) {
 
 // REST //
 app.get('/', (req, res) => {
-  	res.send('Backend läuft')
-})
-
-
-app.get('/api/rooms-uids', async (req, res) => { // List of Room UIDS - HIGH FULLFILL PRIORITY, NO QUEUE
-	try {
-		const rooms = await roomModel.find().lean();
-		const uids = rooms.map(room => room.uid);
-
-		return res.status(200).json(uids)
-	} catch (e) {
-		console.log(e);
-		return res.status(500).send();
-	}
+  	res.send(`Backend running on Port ${process.env.PORT}`)
 })
 
 
@@ -178,19 +188,6 @@ app.get('/api/rooms/:uid', async (req, res) => { // Room Data - HIGH FULLFILL PR
 		} else {
 			return res.status(404).send();
 		}
-	} catch (e) {
-		console.log(e);
-		return res.status(500).send();
-	}
-})
-
-
-app.get('/api/devices-uids', async (req, res) => { // List of Device UIDS - HIGH FULLFILL PRIORITY, NO QUEUE
-	try {
-		const devices = await deviceModel.find().lean();
-		const uids = devices.map(device => device.uid);
-
-		return res.status(200).json(uids)
 	} catch (e) {
 		console.log(e);
 		return res.status(500).send();
@@ -303,6 +300,18 @@ io.on('connection', socket => {
 		if (!room) { return };
 
 		await updateRoom(uid, {...room, ...data, uid});
+	})
+
+	socket.on('room:add', async ({data}) => {
+		await addRoom({...data, uid: genUID()});
+	})
+
+	socket.on('room:remove', async ({uid}) => {
+		const room = await getRoom(uid);
+
+		if (!room) { return };
+
+		await removeRoom(uid);
 	})
 
 	socket.on('disconnect', () => {
