@@ -1,7 +1,5 @@
 backend/node_modules/
 frontend/node_modules/
 
-mosquitto/log
-mosquitto/data
-
-**/log
+mosquitto/log/
+mosquitto/data/
