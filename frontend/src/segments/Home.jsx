@@ -12,7 +12,7 @@ function Room({ uid }) {
     return (
         <Box width={'100%'} display={'flex'} flexDir={'column'} gap={'0.5rem'} pr={'0.5rem'}>
             <Text fontSize={'medium'} fontWeight={'medium'}>{room?.name}</Text>
-            <Box display={'grid'} gridTemplateColumns={'repeat(7, 1fr)'} gridGap={'0.25rem'}>
+            <Box display={'grid'} gridTemplateColumns={'repeat(7, 1fr)'} gridGap={'0.4rem'}> {/* REPEAT AS MUCH AS SCREEN GIVES !!! */}
                 {room?.device_uids?.length > 0 && room?.device_uids?.map((uid) => {
                         if (uid) return (<AutoDevice uid={uid} key={uid}/>);
                     }
@@ -27,7 +27,7 @@ export default function() {
 
     return (
         <Structure title={'Zuhause'}>
-            <Box width={'100%'} overflowY={'auto'}>
+            <Box width={'100%'} height={'100%'} overflowY={'scroll'} scrollbarColor={'rgb(120,120,120) #111111'}>
                 {roomUids.length > 0 && roomUids.map((uid) => {
                         if (uid) return (<Room uid={uid} key={uid} />);
                     }
