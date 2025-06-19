@@ -7,8 +7,7 @@ services:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - HOST=0.0.0.0
-      - BACKEND=192.168.2.116:2000
+      - VITE_BACKEND=http://192.168.2.116:2000
     command: npm run dev
     restart: always
 
