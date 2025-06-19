@@ -82,7 +82,7 @@ export function App({ mobileDrawerOpen, setMobileDrawerOpen}) {
 
 				<Box width={'100%'} height={`calc(${height}px - 3rem)`} display={'flex'} flexDir={'row'} gap={'0.5rem'}>
 					{!isSm && <Sidebar setMobileDrawerOpen={setMobileDrawerOpen}/>}
-					
+
 					{isSm &&
 						 <Drawer.Root size={'xs'} placement={'top'} open={mobileDrawerOpen} onOpenChange={(e) => setMobileDrawerOpen(e.open)}>
 							<Portal>
@@ -129,6 +129,9 @@ export default function() {
 
 					<Route index element={<Navigate to={'/app/dashboard'} />} />
 				</Route>
+
+				<Route path="/sign-in" element={<Navigate to="/app" />} />
+				<Route path="/sign-up" element={<Navigate to="/app" />} />
 
 				<Route path="*" element={<Navigate to="/app" />} />
 			</Routes>
