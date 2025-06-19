@@ -3,8 +3,7 @@ import { io } from "socket.io-client";
 
 const Context = createContext(null);
 
-const ADRESS = "http://192.168.2.116:2000";
-//const ADRESS = "http://31.97.47.250:2000";
+const ADRESS = import.meta.env.VITE_BACKEND;
 
 export function BackendProvider ({ children }) {
 	const [socket, setSocket] = useState(null);
