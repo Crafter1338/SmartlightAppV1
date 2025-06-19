@@ -12,6 +12,7 @@ export default defineConfig({
   },
   server: {
     host: true,
+    allowedHosts: ["srv868971.hstgr.cloud"],
     watch: {
       usePolling: true,
     },

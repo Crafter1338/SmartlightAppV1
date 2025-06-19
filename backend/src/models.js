@@ -6,7 +6,7 @@ const deviceSchema = new mongoose.Schema({
     uid: { type: String, required: true, unique: true },
     mac: { type: String },  
 
-    room: { type: String },
+    room: { type: String }, //SORTA HAS TO BE SYNCED WITH LIKE THE ARRAY IN ROOM !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     battery: { type: Number }, // 1-100
     online: { type: Boolean, default: false },
 
@@ -23,6 +23,8 @@ const deviceSchema = new mongoose.Schema({
 const roomSchema = new mongoose.Schema({
     name: { type: String },
     uid: { type: String, required: true, unique: true },
+
+    device_uids: [String] //SORTA HAS TO BE SYNCED WITH LIKE THE ROOM IN DEVICE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 });
 
 const homeSchema = new mongoose.Schema({

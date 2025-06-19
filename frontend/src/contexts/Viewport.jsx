@@ -28,7 +28,7 @@ export function ViewportProvider({children}) {
 	return (
 		<>
 			<Context.Provider value={{ width, height, aspectRatio, isSm, isMd, isLg }}>
-            	<div style={{ width, height }}>{children}</div>
+            	<div style={{ width, height, minHeight:height }}>{children}</div>
         	</Context.Provider>
 		</>
 	);
