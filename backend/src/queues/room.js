@@ -18,7 +18,8 @@ const update = async ({ uid, room, timestamp }) => {
 
 const add = async(room) => {
 	try {
-
+		const newRoom = new roomModel(room);
+		await newRoom.save();
 	} catch {}
 }
 
