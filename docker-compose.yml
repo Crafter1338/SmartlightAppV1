@@ -22,7 +22,7 @@ services:
     command: npm run dev
     environment:
       - PORT=2000
-      - MONGO_URI=mongodb://mongo:27017/SmartHome
+      - MONGO_URI=mongodb://admin:ASDJ234KIASDUZGuzgasbhdbhggj248728739487691@mongo:27017/SmartHome?authSource=admin
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     depends_on:
@@ -42,7 +42,7 @@ services:
       - redis
       - backend
     environment:
-      - MONGO_URI=mongodb://mongo:27017/SmartHome
+      - MONGO_URI=mongodb://admin:ASDJ234KIASDUZGuzgasbhdbhggj248728739487691@mongo:27017/SmartHome?authSource=admin
     #cpus: 2.0
     restart: always
 
@@ -57,7 +57,7 @@ services:
       - redis
       - backend
     environment:
-      - MONGO_URI=mongodb://mongo:27017/SmartHome
+      - MONGO_URI=mongodb://admin:ASDJ234KIASDUZGuzgasbhdbhggj248728739487691@mongo:27017/SmartHome?authSource=admin
     #cpus: 2.0
     restart: always
 
@@ -65,10 +65,13 @@ services:
   mongo:
     image: mongo:7
     restart: always
-    ports:
-      - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: ASDJ234KIASDUZGuzgasbhdbhggj248728739487691
 
   redis:
     image: redis:7
