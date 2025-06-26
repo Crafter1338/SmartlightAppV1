@@ -132,7 +132,7 @@ function AddRoomModal() {
                                                             <Checkbox.HiddenInput />
                                                             <Checkbox.Control />
 
-                                                            <Checkbox.Label>
+                                                            <Checkbox.Label color={!device?.online && "fg.error"}>
                                                                 {device?.name || device?.uid}
                                                             </Checkbox.Label>
                                                         </Checkbox.Root>
@@ -162,7 +162,6 @@ function AddRoomModal() {
                                         variant={"outline"}
                                         flex={1}
                                         onClick={() => {
-                                            console.log(JSON.stringify(room));
                                             socket.emit("room:add", { data: room });
                                             setRoom({ name: "", index: 0, device_uids: [] });
                                         }}
@@ -172,7 +171,12 @@ function AddRoomModal() {
                                 </Dialog.ActionTrigger>
 
                                 <Dialog.ActionTrigger asChild>
-                                    <Button variant={"outline"} flex={1} color={"fg.error"}>
+                                    <Button
+                                        variant={"outline"}
+                                        flex={1}
+                                        color={"fg.error"}
+                                        onClick={() => setRoom({ name: "", index: 0, device_uids: [] })}
+                                    >
                                         Abbrechen
                                     </Button>
                                 </Dialog.ActionTrigger>
@@ -186,6 +190,9 @@ function AddRoomModal() {
 }
 
 function RemoveRoomModal() {
+    const { rooms, socket } = useBackend();
+    const [selected, setSelected] = useState([]);
+
     return (
         <Dialog.Root>
             <Dialog.Trigger asChild>
@@ -193,24 +200,95 @@ function RemoveRoomModal() {
                     <Minus width={"8px"} />
                 </IconButton>
             </Dialog.Trigger>
+
             <Portal>
                 <Dialog.Backdrop />
                 <Dialog.Positioner>
                     <Dialog.Content>
                         <Dialog.Header>
-                            <Dialog.Title>Raum Entfernen</Dialog.Title>
+                            <Dialog.Title>Raum Erstellen</Dialog.Title>
                         </Dialog.Header>
 
                         <Dialog.Body>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                                incididunt ut labore et dolore magna aliqua.
-                            </p>
+                            <Box display={"flex"} flexDir={"column"} gap={"0.75rem"}>
+                                <Fieldset.Root maxH={"200px"} overflowY={"auto"}>
+                                    <CheckboxGroup name="rooms">
+                                        <Fieldset.Legend fontSize="sm" mb="2">
+                                            Raum Auswählen
+                                        </Fieldset.Legend>
+                                        <Fieldset.Content>
+                                            <For each={rooms}>
+                                                {(room) => {
+                                                    if (!room?.uid) {
+                                                        return;
+                                                    }
+                                                    return (
+                                                        <Checkbox.Root
+                                                            key={room?.uid}
+                                                            value={room?.uid}
+                                                            onCheckedChange={(e) => {
+                                                                if (e.checked == true) {
+                                                                    setSelected((prev) => [...prev, String(room?.uid)]);
+                                                                } else {
+                                                                    setSelected((prev) =>
+                                                                        prev.filter((s) => s == room?.uid)
+                                                                    );
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Checkbox.HiddenInput />
+                                                            <Checkbox.Control />
+
+                                                            <Checkbox.Label>{room?.name || room?.uid}</Checkbox.Label>
+                                                        </Checkbox.Root>
+                                                    );
+                                                }}
+                                            </For>
+                                        </Fieldset.Content>
+                                    </CheckboxGroup>
+                                </Fieldset.Root>
+                            </Box>
                         </Dialog.Body>
 
                         <Dialog.CloseTrigger asChild>
                             <CloseButton size="sm" />
                         </Dialog.CloseTrigger>
+
+                        <Dialog.Footer>
+                            <Box
+                                w={"100%"}
+                                display={"flex"}
+                                gap={"0.5rem"}
+                                justifyContent={"space-between"}
+                                alignItems={"center"}
+                            >
+                                <Dialog.ActionTrigger asChild>
+                                    <Button
+                                        variant={"outline"}
+                                        flex={1}
+                                        onClick={() => {
+                                            selected.forEach((uid) => {
+                                                socket.emit("room:remove", { uid });
+                                            });
+                                            setSelected([]);
+                                        }}
+                                    >
+                                        Löschen
+                                    </Button>
+                                </Dialog.ActionTrigger>
+
+                                <Dialog.ActionTrigger asChild>
+                                    <Button
+                                        variant={"outline"}
+                                        flex={1}
+                                        color={"fg.error"}
+                                        onClick={() => setSelected([])}
+                                    >
+                                        Abbrechen
+                                    </Button>
+                                </Dialog.ActionTrigger>
+                            </Box>
+                        </Dialog.Footer>
                     </Dialog.Content>
                 </Dialog.Positioner>
             </Portal>
@@ -249,9 +327,7 @@ export default function ({ setMobileDrawerOpen }) {
                     flexDir={"column"}
                     gap={"1rem"}
                 >
-                    {rooms.map((room) => (
-                        <Room uid={room?.uid} key={room?.uid} />
-                    ))}
+                    {rooms.map((room) => room?.uid && <Room uid={room?.uid} key={room?.uid} />)}
                 </Box>
             </Structure>
         </>
