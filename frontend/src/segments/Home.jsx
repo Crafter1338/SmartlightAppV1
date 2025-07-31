@@ -103,7 +103,13 @@ function AddRoomModal() {
                                         <Fieldset.Content>
                                             <For each={devices}>
                                                 {(device) => {
-                                                    if (device.room) {
+                                                    if (!device) {
+                                                        return;
+                                                    }
+                                                    if (!device?.uid) {
+                                                        return;
+                                                    }
+                                                    if (device?.room) {
                                                         return;
                                                     }
                                                     return (
@@ -219,9 +225,16 @@ function RemoveRoomModal() {
                                         <Fieldset.Content>
                                             <For each={rooms}>
                                                 {(room) => {
+                                                    if (!room) {
+                                                        return;
+                                                    }
                                                     if (!room?.uid) {
                                                         return;
                                                     }
+                                                    if (!room?.device_uids) {
+                                                        return;
+                                                    }
+
                                                     return (
                                                         <Checkbox.Root
                                                             key={room?.uid}
